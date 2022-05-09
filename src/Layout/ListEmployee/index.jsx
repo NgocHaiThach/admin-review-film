@@ -1,8 +1,9 @@
 import React from 'react';
 import { Button, Container, Table } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import EmployeeItem from '../EmployeeItem';
 
-function ListEmployee({ employList, onDeleteEmployee }) {
+function ListEmployee({ filmList, onDeleteEmployee }) {
 
 
     const handleDeleteEmployee = (id) => {
@@ -29,57 +30,32 @@ function ListEmployee({ employList, onDeleteEmployee }) {
                     </tr>
                 </thead>
                 <tbody>
-                    {/* {employList.map((item, index) => (
-                        <EmployeeItem key={index} item={item} handleDeleteEmployee={handleDeleteEmployee} />
-                    ))} */}
-                    <tr>
-                        <th>Sonic 2 2022</th>
-                        {/* <th>Review phim Sonic 2 2022- Màn team up thú vị của Sonic</th> */}
-                        <th>122 phút</th>
-                        <th>Jeff Fowler</th>
-                        <th>Mỹ</th>
-                        <th>James Marsden, Jim Carrey, Ben Schwartz</th>
-                        <th>Giả tưởng, hành động, phiêu lưu</th>
-                        <th>09/04/2022</th>
-                        <td style={{ display: 'flex' }}>
-                            <Button
-                                className="mr-10"
-                                variant="primary">
-                                {/* <Link style={{ color: 'white', textDecoration: 'none' }} to={`update-employee/${item.id}`}> */}
-                                Update
-                                {/* </Link> */}
-                            </Button>
-                            <Button
-                                className="ml-10"
-                                variant="danger">
-                                Delete
-                            </Button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th> The Secrets of Dumbledore</th>
-                        {/* <th>Review phim Sonic 2 2022- Màn team up thú vị của Sonic</th> */}
-                        <th>142 phút</th>
-                        <th> David Yates</th>
-                        <th>Mỹ</th>
-                        <th>Jude Law, Mads Mikkelsen, Eddie Redmayne</th>
-                        <th>Phù thủy, hành động, phiêu lưu</th>
-                        <th>08/04/2022</th>
-                        <td style={{ display: 'flex' }}>
-                            <Button
-                                className="mr-10"
-                                variant="primary">
-                                {/* <Link style={{ color: 'white', textDecoration: 'none' }} to={`update-employee/${item.id}`}> */}
-                                Update
-                                {/* </Link> */}
-                            </Button>
-                            <Button
-                                className="ml-10"
-                                variant="danger">
-                                Delete
-                            </Button>
-                        </td>
-                    </tr>
+                    {filmList.map((item, index) => (
+                        <tr key={index}>
+                            <th>{item._source.title}</th>
+                            <th>{item._source.movie.duration}</th>
+                            <th>{item._source.movie.director}</th>
+                            <th>{item._source.movie.country}</th>
+                            <th>{item._source.movie.actor}</th>
+                            <th>{item._source.movie.genre}</th>
+                            <th>{item._source.movie.premiere}</th>
+                            <td style={{ display: 'flex' }}>
+                                <Button
+                                    className="mr-10"
+                                    variant="primary">
+                                    <Link style={{ color: 'white', textDecoration: 'none' }} to={`update/${item._id}`}>
+                                        Update
+                                    </Link>
+                                </Button>
+                                <Button
+                                    className="ml-10"
+                                    variant="danger">
+                                    Delete
+                                </Button>
+                            </td>
+                        </tr>
+                    ))}
+
                 </tbody>
             </Table>
         </Container >

@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Container } from 'react-bootstrap'
 import { useParams } from 'react-router-dom';
 import UpdateEmployee from '../../Layout/UpdateEmployee'
-import RequestApi from '../../Utils/RequestApi';
+import callApi from '../../Utils/RequestApi';
+
 
 function UpdateEmployeePage() {
 
@@ -10,14 +11,14 @@ function UpdateEmployeePage() {
 
   const { id } = useParams();
 
-  const getEmployee = async () => {
-    // try {
-    //   const res = await RequestApi(`employees/${id}`, 'GET');
-    //   setValueUpdate(res.data);
-    // }
-    // catch (err) {
-    //   console.log(err)
-    // }
+  const getFilmItem = async () => {
+    try {
+      const res = await callApi(`blogs/${id}`, 'GET');
+      setValueUpdate(res.data.documents);
+    }
+    catch (err) {
+      console.log(err)
+    }
   }
 
   const handleUpdateEmployee = async (data) => {
@@ -35,7 +36,7 @@ function UpdateEmployeePage() {
   }
 
   useEffect(() => {
-    getEmployee();
+    getFilmItem();
   }, [])
 
   return (

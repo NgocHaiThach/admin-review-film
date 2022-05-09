@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Form, Modal } from 'react-bootstrap';
 import * as yup from 'yup';
 import { useForm } from "react-hook-form";
 import { Link } from 'react-router-dom';
-
-
 
 const schema = yup.object().shape({
     title: yup.string().required(),
@@ -31,21 +29,34 @@ function UpdateEmployee({ valueUpdate, handleUpdateEmployee }) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    console.log(valueUpdate);
+
+
     // const [value, setValue] = useState(
-    //     {
-    //         title: valueUpdate.title,
-    //         name: valueUpdate.name,
-    //         duaration: valueUpdate.duaration,
-    //         director: valueUpdate.director,
-    //         actor: valueUpdate.actor,
-    //         country: valueUpdate.country,
-    //         genre: valueUpdate.genre,
-    //         premiere: valueUpdate.premiere,
-    //         rate: valueUpdate.rate,
-    //         content: valueUpdate.content,
-    //         author: valueUpdate.author,
-    //     }
+    //     // {
+    //     //     title: valueUpdate._source.title,
+    //     //     // name: 'asdasd',
+    //     //     duaration: valueUpdate._source.movie.duaration,
+    //     //     director: valueUpdate._source.movie.director,
+    //     //     actor: valueUpdate._source.movie.actor,
+    //     //     country: valueUpdate._source.movie.country,
+    //     //     genre: valueUpdate._source.movie.genre,
+    //     //     premiere: valueUpdate._source.movie.premiere,
+    //     //     rate: valueUpdate._source.ratingScale[0].rating,
+    //     //     content: valueUpdate._source.content[1].sectionContent,
+    //     //     author: valueUpdate._source.author,
+    //     // } || {}
+    //     valueUpdate
     // )
+
+    const [value, setValue] = useState({})
+
+    useEffect(() => {
+        if (valueUpdate) {
+            setValue(valueUpdate)
+        }
+    }, [valueUpdate])
+
 
     const onSubmit = (data) => {
         handleUpdateEmployee(data)
@@ -62,20 +73,6 @@ function UpdateEmployee({ valueUpdate, handleUpdateEmployee }) {
                     Cập nhật bài viết
                 </div>
 
-                <Form.Group className="mb-3" controlId="formBasicPassword">
-                    <Form.Label>Email</Form.Label>
-                    <Form.Control
-                        type="email"
-                        placeholder="Enter email"
-                        name="email"
-                        {...register("email")}
-                    // value={value.email}
-                    // onChange={(e) => setValue(e.target.value)}
-                    />
-                    {errors?.email?.type === "required" &&
-                        <p className="valid-form__message">* Vui lòng nhập email của bạn</p>}
-                </Form.Group>
-
 
                 <Form.Group className="mb-3" controlId="formBasicEmail">
                     <Form.Label>Tiêu đề</Form.Label>
@@ -84,8 +81,8 @@ function UpdateEmployee({ valueUpdate, handleUpdateEmployee }) {
                         placeholder="Tiêu đề của phim"
                         name="title"
                         {...register("title")}
-                    // value={value.title}
-                    // onChange={(e) => setValue(e.target.value)}
+                        value={value.title}
+                        onChange={(e) => setValue(e.target.value)}
                     />
                     {errors?.title?.type === "required" &&
                         <p className="valid-form__message">* Vui lòng nhập tiêu đề của phim</p>}

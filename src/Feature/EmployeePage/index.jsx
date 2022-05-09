@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import ListEmployee from '../../Layout/ListEmployee'
-import RequestApi from '../../Utils/RequestApi';
+import callApi from '../../Utils/RequestApi';
 
 
 function EmployeePage() {
 
-    const [employList, setEmployList] = useState([]);
-
-    const getListEmploy = async () => {
-        // const res = await RequestApi('employees', 'GET');
-        // return setEmployList(res.data);
+    const [filmList, setFilmList] = useState([]);
+    const getFilmList = async () => {
+        const res = await callApi('blogs', 'GET')
+        console.log(res.data.documents)
+        setFilmList(res.data.documents)
     }
 
 
     useEffect(() => {
-        getListEmploy();
+        getFilmList();
     }, [])
 
     const onDeleteEmployee = async (id) => {
@@ -31,7 +31,7 @@ function EmployeePage() {
     return (
         <div>
             <ListEmployee
-                employList={employList}
+                filmList={filmList}
                 onDeleteEmployee={onDeleteEmployee}
             />
         </div>
