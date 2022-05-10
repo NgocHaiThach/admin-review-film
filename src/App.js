@@ -17,7 +17,7 @@ function App() {
           <Redirect exact from="/" to="/list" />
           <Route exact path="/list" component={EmployeePage} />
           <Route exact path="/add" component={AddEmployeePage} />
-          <Route exact path="/update/:id" component={UpdateEmployeePage} />
+          <Route exact path="/blog/:id" component={UpdateEmployeePage} />
         </Switch>
       </BrowserRouter>
     </div>
