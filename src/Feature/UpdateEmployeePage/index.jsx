@@ -1,26 +1,23 @@
-import React, { useEffect, useState } from 'react'
-import { Container } from 'react-bootstrap'
-import { useParams } from 'react-router-dom';
-import UpdateEmployee from '../../Layout/UpdateEmployee'
-import callApi from '../../Utils/RequestApi';
-
+import React, { useEffect, useState } from "react";
+import { Container } from "react-bootstrap";
+import { useParams } from "react-router-dom";
+import UpdateEmployee from "../../Layout/UpdateEmployee";
+import { getBlogDetail } from "../../Utils/blogsAPI";
+import RequestApi from "../../Utils/RequestApi";
 
 function UpdateEmployeePage() {
-
+  const [blogDetail, setBlogDetail] = useState({});
   const [valueUpdate, setValueUpdate] = useState();
-
   const { id } = useParams();
 
-  const getFilmItem = async () => {
-    try {
-      const res = await callApi(`blogs/${id}`, 'GET');
-      setValueUpdate(res.data.documents);
-    }
-    catch (err) {
-      console.log(err)
-    }
-  }
+  useEffect(() => {
+    if (id) getBlogByID(id);
+  }, [id]);
 
+  const getBlogByID = async (id) => {
+    const { data } = await getBlogDetail(id);
+    setBlogDetail(data.documents[0]);
+  };
   const handleUpdateEmployee = async (data) => {
     // try {
     //   await RequestApi(`employees/${id}`, 'PUT', {
@@ -33,20 +30,17 @@ function UpdateEmployeePage() {
     // catch (err) {
     //   console.log(err);
     // }
-  }
-
-  useEffect(() => {
-    getFilmItem();
-  }, [])
+  };
 
   return (
     <Container>
-      {valueUpdate && <UpdateEmployee
+      <UpdateEmployee
+        blogDetail={blogDetail}
         valueUpdate={valueUpdate}
         handleUpdateEmployee={handleUpdateEmployee}
-      />}
+      />
     </Container>
-  )
+  );
 }
 
-export default UpdateEmployeePage
+export default UpdateEmployeePage;

@@ -1,41 +1,28 @@
-import React, { useEffect, useState } from 'react'
-import ListEmployee from '../../Layout/ListEmployee'
-import callApi from '../../Utils/RequestApi';
-
+import React, { useEffect, useState } from "react";
+import { Table, Button } from "react-bootstrap";
+import ListEmployee from "../../Layout/ListEmployee";
+import { deleteBlog, getBlogsList } from "../../Utils/blogsAPI";
+import RequestApi from "../../Utils/RequestApi";
 
 function EmployeePage() {
+  const [blogList, setblogList] = useState([]);
 
-    const [filmList, setFilmList] = useState([]);
-    const getFilmList = async () => {
-        const res = await callApi('blogs', 'GET')
-        console.log(res.data.documents)
-        setFilmList(res.data.documents)
-    }
+  const getBlogs = async () => {
+    const { data } = await getBlogsList();
+    console.log(data);
+    setblogList(data.documents);
+    //return data; // array
+  };
 
+  useEffect(() => {
+    getBlogs();
+  }, []);
 
-    useEffect(() => {
-        getFilmList();
-    }, [])
-
-    const onDeleteEmployee = async (id) => {
-        // try {
-        //     await RequestApi(`employees/${id}`, 'DELETE');
-        //     console.log(id)
-        //     getListEmploy();
-        // }
-        // catch (err) {
-        //     console.log(err);
-        // }
-    }
-
-    return (
-        <div>
-            <ListEmployee
-                filmList={filmList}
-                onDeleteEmployee={onDeleteEmployee}
-            />
-        </div>
-    )
+  return (
+    <div>
+      <ListEmployee blogList={blogList} key={"list"} />
+    </div>
+  );
 }
 
-export default EmployeePage
+export default EmployeePage;
