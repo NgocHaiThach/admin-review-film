@@ -1,344 +1,157 @@
-<<<<<<< HEAD
-import React, { useEffect, useState } from 'react';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, Form, Modal } from 'react-bootstrap';
-import * as yup from 'yup';
-=======
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, Form, Modal } from "react-bootstrap";
-import * as yup from "yup";
->>>>>>> cf49c0c23b35b56728a3adddcb03ad2a88411d36
+import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-
-<<<<<<< HEAD
-const schema = yup.object().shape({
-=======
-const schema = yup
-  .object()
-  .shape({
->>>>>>> cf49c0c23b35b56728a3adddcb03ad2a88411d36
-    title: yup.string().required(),
-    name: yup.string().required(),
-    duaration: yup.string().required(),
-    director: yup.string().required(),
-    actor: yup.string().required(),
-    country: yup.string().required(),
-    genre: yup.string().required(),
-    premiere: yup.string().required(),
-    rate: yup.string().required(),
-    content: yup.string().required(),
-    author: yup.string().required(),
-<<<<<<< HEAD
-}).required();
-
-function UpdateEmployee({ valueUpdate, handleUpdateEmployee }) {
-
-    const { register, reset, handleSubmit, formState: { errors } } = useForm({
-        resolver: yupResolver(schema)
-    });
-
-    const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-
-    console.log(valueUpdate);
+import { Form, Formik } from "formik";
+import { Button, Container } from 'react-bootstrap';
+import InputField from "../InputField";
+import { useParams } from "react-router-dom";
+import { getBlogDetail, updateBlog } from "../../Utils/blogsAPI";
 
 
-    // const [value, setValue] = useState(
-    //     // {
-    //     //     title: valueUpdate._source.title,
-    //     //     // name: 'asdasd',
-    //     //     duaration: valueUpdate._source.movie.duaration,
-    //     //     director: valueUpdate._source.movie.director,
-    //     //     actor: valueUpdate._source.movie.actor,
-    //     //     country: valueUpdate._source.movie.country,
-    //     //     genre: valueUpdate._source.movie.genre,
-    //     //     premiere: valueUpdate._source.movie.premiere,
-    //     //     rate: valueUpdate._source.ratingScale[0].rating,
-    //     //     content: valueUpdate._source.content[1].sectionContent,
-    //     //     author: valueUpdate._source.author,
-    //     // } || {}
-    //     valueUpdate
-    // )
+//truyền từ cái này
+// tao log dc cái
 
-    const [value, setValue] = useState({})
-
-    useEffect(() => {
-        if (valueUpdate) {
-            setValue(valueUpdate)
-        }
-    }, [valueUpdate])
-
-
-    const onSubmit = (data) => {
-        handleUpdateEmployee(data)
-        if (handleUpdateEmployee) {
-            handleShow();
-            reset();
-        }
-
-    }
+function UpdateEmployee({ blogDetail, id }) {
+    const source = blogDetail._source;
+    const movie = blogDetail._source.movie;
+    const rating = blogDetail._source.ratingScale;  // duoc r do
+    const content = blogDetail._source.content;  // duoc r do
+    console.log(movie.duaration); // duoc r do
     return (
-        <>
-            <Form className="form-add">
-                <div style={{ fontSize: '30px', marginTop: '50px', marginBottom: '50px', fontWeight: 'bold' }}>
-                    Cập nhật bài viết
-                </div>
+        <Container className="mb-5">
 
+            <div style={{ fontSize: '30px', marginTop: '50px', marginBottom: '50px', fontWeight: 'bold' }}>
+                Thêm bài viết {blogDetail._source.author}
+            </div>
+            <Formik
+                initialValues={{
+                    title: source.title || "",
+                    image: source.image || "",
+                    name: movie.name || "",
+                    duaration: movie.duaration || "",
+                    director: movie.director || "",
+                    actor: movie.actor || "",
+                    country: movie.country || "",
+                    genre: movie.genre || "",
+                    premiere: movie.premiere || "",
+                    content0: content[0].sectionContent || "",
+                    content1: content[1].sectionContent || "",
+                    content2: content[2].sectionContent || "",
+                    content3: content[3].sectionContent || "",
+                    ratingIMBD: rating[0].rating || "",
+                    ratingMastascore: rating[1].rating || "",
+                    ratingRotensTomato: rating[2].rating || "",
+                    author: source.author || "",
+                }}
+                validationSchema={Yup.object({
+                    title: Yup.string().required('Trường này bắt buộc'),
+                    image: Yup.string().required('Trường này bắt buộc'),
+                    name: Yup.string().required('Trường này bắt buộc'),
+                    duaration: Yup.string(),
+                    director: Yup.string().required('Trường này bắt buộc'),
+                    actor: Yup.string().required('Trường này bắt buộc'),
+                    country: Yup.string().required('Trường này bắt buộc'),
+                    genre: Yup.string().required('Trường này bắt buộc'),
+                    premiere: Yup.string().required('Trường này bắt buộc'),
+                    content0: Yup.string().required('Trường này bắt buộc'),
+                    content1: Yup.string().required('Trường này bắt buộc'),
+                    content2: Yup.string().required('Trường này bắt buộc'),
+                    content3: Yup.string().required('Trường này bắt buộc'),
+                    ratingIMBD: Yup.string().required('Trường này bắt buộc'),
+                    ratingMastascore: Yup.string().required('Trường này bắt buộc'),
+                    ratingRotensTomato: Yup.string().required('Trường này bắt buộc'),
+                    author: Yup.string().required('Trường này bắt buộc'),
+                })}
+                onSubmit={(values) => {
+                    console.log(values)
+                    updateBlog(id, {
+                        title: values.title,
+                        image: values.image,
+                        movie: {
+                            name: values.name,
+                            duaration: values.duaration,
+                            director: values.director,
+                            actor: values.actor,
+                            country: values.country,
+                            genre: values.genre,
+                            premiere: values.premiere
+                        },
+                        content: [
+                            {
+                                order: 0,
+                                type: 'image',
+                                sectionContent: values.content0
+                            },
+                            {
+                                order: 1,
+                                type: 'image',
+                                sectionContent: values.content1
+                            },
+                            {
+                                order: 2,
+                                type: 'image',
+                                sectionContent: values.content2
+                            },
+                            {
+                                order: 3,
+                                type: 'image',
+                                sectionContent: values.content3
+                            }
+                        ],
+                        ratingScale: [
+                            {
+                                name: 'IMBD',
+                                rating: values.ratingIMBD
+                            },
+                            {
+                                name: 'Mastascore',
+                                rating: values.ratingMastascore
+                            },
+                            {
+                                name: 'Rotens Tomato',
+                                rating: values.ratingRotensTomato
+                            }
 
-                <Form.Group className="mb-3" controlId="formBasicEmail">
-                    <Form.Label>Tiêu đề</Form.Label>
-                    <Form.Control
-                        type="text"
-                        placeholder="Tiêu đề của phim"
-                        name="title"
-                        {...register("title")}
-                        value={value.title}
-                        onChange={(e) => setValue(e.target.value)}
-                    />
-                    {errors?.title?.type === "required" &&
-                        <p className="valid-form__message">* Vui lòng nhập tiêu đề của phim</p>}
-                </Form.Group>
+                        ],
+                        author: values.author
+                    })
+                }}
+            >
+                {(formik) => (
+                    <Form>
+                        <InputField name="title" type="text" placeholder="Title phim" label="Title phim" />
+                        <InputField name="image" type="text" placeholder="Ảnh phim (Đường dẫn)" label="Ảnh phim (Đường dẫn)" />
+                        <InputField name="name" type="text" placeholder="Tên phim" label="Tên phim" />
+                        <InputField name="duaration" type="text" placeholder="Thời lượng phim" label="Thời lượng phim" />
+                        <InputField name="director" type="text" placeholder="Đạo diễn phim" label="Đạo diễn phim" />
+                        <InputField name="actor" type="text" placeholder="Diễn viên phim" label="Diễn viên phim" />
+                        <InputField name="country" type="text" placeholder="Quốc gia" label="Quốc gia" />
+                        <InputField name="genre" type="text" placeholder="Thể loại phim" label="Thể loại phim" />
+                        <InputField name="premiere" type="text" placeholder="Ngày công chiếu" label="Ngày công chiếu" />
+                        <InputField name="content0" type="text" placeholder="Nội dung bài viết" label="Nội dung bài viết" />
+                        <InputField name="content1" type="text" placeholder="Nội dung bài viết" label="Nội dung bài viết" />
+                        <InputField name="content2" type="text" placeholder="Nội dung bài viết" label="Nội dung bài viết" />
+                        <InputField name="content3" type="text" placeholder="Nội dung bài viết" label="Nội dung bài viết" />
+                        <InputField name="ratingIMBD" type="text" placeholder="Điểm IMBD" label="Điểm IMBD" />
+                        <InputField name="ratingMastascore" type="text" placeholder="Điểm Mastascore" label="Điểm Mastascore" />
+                        <InputField name="ratingRotensTomato" type="text" placeholder="Điểm Rotens Tomato" label="Điểm Rotens Tomato" />
+                        <InputField name="author" type="text" placeholder="Tác giả bài viết" label="Tác giả bài viết" />
 
-                <Form.Group className="mb-3" controlId="formBasicPassword">
-                    <Form.Label>Tên phim</Form.Label>
-                    <Form.Control
-                        type="text"
-                        placeholder="Tên phim của phim"
-                        name="name"
-                        {...register("name")}
-                    // value={value.name}
-                    // onChange={(e) => setValue(e.target.value)}
-                    />
-                    {errors?.name?.type === "required" &&
-                        <p className="valid-form__message">* Vui lòng nhập tên của phim</p>}
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="formBasicPassword">
-                    <Form.Label>Thời lượng</Form.Label>
-                    <Form.Control
-                        type="email"
-                        placeholder="Thời lượng của phim"
-                        name="duaration"
-                        {...register("duaration")}
-                    // value={value.duaration}
-                    // onChange={(e) => setValue(e.target.value)}
-                    />
-                    {errors?.duaration?.type === "required" &&
-                        <p className="valid-form__message">* Vui lòng nhập thời lượng của phim</p>}
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="formBasicPassword">
-                    <Form.Label>Đạo diễn</Form.Label>
-                    <Form.Control
-                        type="email"
-                        placeholder="Đạo diễn của phim"
-                        name="director"
-                        {...register("director")}
-                    // value={value.director}
-                    // onChange={(e) => setValue(e.target.value)}
-                    />
-                    {errors?.director?.type === "required" &&
-                        <p className="valid-form__message">* Vui lòng nhập đạo diễn của phim</p>}
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="formBasicPassword">
-                    <Form.Label>Diễn viên</Form.Label>
-                    <Form.Control
-                        type="email"
-                        placeholder="Diễn viên của phim"
-                        name="actor"
-                        {...register("actor")}
-                    // value={value.actor}
-                    // onChange={(e) => setValue(e.target.value)}
-                    />
-                    {errors?.actor?.type === "required" &&
-                        <p className="valid-form__message">* Vui lòng nhập diễn viên của phim</p>}
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="formBasicPassword">
-                    <Form.Label>Quốc gia</Form.Label>
-                    <Form.Control
-                        type="email"
-                        placeholder="Quốc gia của phim"
-                        name="country"
-                        {...register("country")}
-                    // value={value.country}
-                    // onChange={(e) => setValue(e.target.value)}
-                    />
-                    {errors?.country?.type === "required" &&
-                        <p className="valid-form__message">* Vui lòng nhập quốc gia của phim</p>}
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="formBasicPassword">
-                    <Form.Label>Thể loại</Form.Label>
-                    <Form.Control
-                        type="email"
-                        placeholder="Thể loại của phim"
-                        name="genre"
-                        {...register("genre")}
-                    // value={value.genre}
-                    // onChange={(e) => setValue(e.target.value)}
-                    />
-                    {errors?.genre?.type === "required" &&
-                        <p className="valid-form__message">* Vui lòng nhập thể loại của phim</p>}
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="formBasicPassword">
-                    <Form.Label>Khởi chiếu</Form.Label>
-                    <Form.Control
-                        type="email"
-                        placeholder="Thời gian khởi chiếu của phim"
-                        name="premiere"
-                        {...register("premiere")}
-                    // value={value.premiere}
-                    // onChange={(e) => setValue(e.target.value)}
-                    />
-                    {errors?.premiere?.type === "required" &&
-                        <p className="valid-form__message">* Vui lòng nhập thời gian khởi chiếu của phim</p>}
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="formBasicPassword">
-                    <Form.Label>Nội dung</Form.Label>
-                    <Form.Control
-                        type="email"
-                        placeholder="Nội dung của phim"
-                        name="content"
-                        {...register("content")}
-                    // value={value.content}
-                    // onChange={(e) => setValue(e.target.value)}
-                    />
-                    {errors?.content?.type === "required" &&
-                        <p className="valid-form__message">* Vui lòng nhập nội dung của phim</p>}
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="formBasicPassword">
-                    <Form.Label>Đánh giá</Form.Label>
-                    <Form.Control
-                        type="email"
-                        placeholder="Đánh giá của phim"
-                        name="rate"
-                        {...register("rate")}
-                    // value={value.rate}
-                    // onChange={(e) => setValue(e.target.value)}
-                    />
-                    {errors?.rate?.type === "required" &&
-                        <p className="valid-form__message">* Vui lòng nhập đánh giá của phim</p>}
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="formBasicPassword">
-                    <Form.Label>Tác giả</Form.Label>
-                    <Form.Control
-                        type="email"
-                        placeholder="Tác giả của phim"
-                        name="author    "
-                        {...register("author")}
-                    // value={value.author}
-                    // onChange={(e) => setValue(e.target.value)}
-                    />
-                    {errors?.author?.type === "required" &&
-                        <p className="valid-form__message">* Vui lòng nhập tác giả của phim</p>}
-                </Form.Group>
-
-
-                <Button
-                    onClick={handleShow}
-                    className="mr-10"
-                    variant="primary">
-                    Cập nhật bài viết
-                </Button>
-                <Button className="ml-10" variant="secondary">
-                    <Link style={{ color: 'white', textDecoration: 'none' }} to='/list-employee'>
-                        Trở về
-                    </Link>
-                </Button>
-            </Form>
-            <Modal show={show} onHide={handleClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Xác nhận</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>Bạn có chắc chắn muốn cập nhật bài viết</Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                        Trở về
-                    </Button>
-                    <Button
-                        variant="primary"
-                        onClick={handleSubmit(onSubmit)}
-                    >
-                        Cập nhật bài viết
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-        </>
+                        <Button className="mr-10" variant="primary" type="submit">
+                            Cập nhật bài viết
+                        </Button>
+                        <Button className="ml-10" variant="secondary">
+                            <Link style={{ color: 'white', textDecoration: 'none' }} to="/list">
+                                Trở về
+                            </Link>
+                        </Button>
+                    </Form>
+                )}
+            </Formik>
+        </Container>
     );
-=======
-  })
-  .required();
-
-function UpdateEmployee({ blogDetail, handleUpdateEmployee, ...props }) {
-  const {
-    register,
-    reset,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
-
-  const useEffect =
-    (() => {
-      console.log(blogDetail);
-    },
-    [blogDetail]);
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
-  // const [value, setValue] = useState(
-  //     {
-  //         title: valueUpdate.title,
-  //         name: valueUpdate.name,
-  //         duaration: valueUpdate.duaration,
-  //         director: valueUpdate.director,
-  //         actor: valueUpdate.actor,
-  //         country: valueUpdate.country,
-  //         genre: valueUpdate.genre,
-  //         premiere: valueUpdate.premiere,
-  //         rate: valueUpdate.rate,
-  //         content: valueUpdate.content,
-  //         author: valueUpdate.author,
-  //     }
-  // )
-
-  const onSubmit = (data) => {
-    handleUpdateEmployee(data);
-    if (handleUpdateEmployee) {
-      handleShow();
-      reset();
-    }
-  };
-  return (
-    <>
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Xác nhận</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Bạn có chắc chắn muốn cập nhật bài viết</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Trở về
-          </Button>
-          <Button variant="primary" onClick={handleSubmit(onSubmit)}>
-            Cập nhật bài viết
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </>
-  );
->>>>>>> cf49c0c23b35b56728a3adddcb03ad2a88411d36
 }
 
 export default UpdateEmployee;

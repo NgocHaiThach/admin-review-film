@@ -6,8 +6,7 @@ import { getBlogDetail } from "../../Utils/blogsAPI";
 import RequestApi from "../../Utils/RequestApi";
 
 function UpdateEmployeePage() {
-  const [blogDetail, setBlogDetail] = useState({});
-  const [valueUpdate, setValueUpdate] = useState();
+  const [blogDetail, setBlogDetail] = useState(null);
   const { id } = useParams();
 
   useEffect(() => {
@@ -17,28 +16,23 @@ function UpdateEmployeePage() {
   const getBlogByID = async (id) => {
     const { data } = await getBlogDetail(id);
     setBlogDetail(data.documents[0]);
+    // console.log(data.documents[0])
   };
   const handleUpdateEmployee = async (data) => {
-    // try {
-    //   await RequestApi(`employees/${id}`, 'PUT', {
-    //     // id: 1,
-    //     firstName: data.firstName,
-    //     lastName: data.lastName,
-    //     emailId: data.email
-    //   })
-    // }
-    // catch (err) {
-    //   console.log(err);
-    // }
+
   };
+
+
+
 
   return (
     <Container>
-      <UpdateEmployee
-        blogDetail={blogDetail}
-        valueUpdate={valueUpdate}
-        handleUpdateEmployee={handleUpdateEmployee}
-      />
+      {blogDetail &&
+        <UpdateEmployee
+          id={id}
+          blogDetail={blogDetail}
+        />
+      }
     </Container>
   );
 }

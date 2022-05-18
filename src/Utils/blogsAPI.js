@@ -11,7 +11,7 @@ export const getBlogDetail = async (id) => {
   return res;
 };
 export const insertBlog = async (id, blog) => {
-  const res = await axios.post(`http://localhost:5000/api/blogs/${id}`, {
+  const res = await axios.post(`http://localhost:5000/api/blogs`, {
     blog,
   });
   return res;
